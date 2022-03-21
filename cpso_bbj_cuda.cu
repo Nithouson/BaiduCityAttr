@@ -40,7 +40,7 @@ char indexfile[]="data-c38-2018.txt";
 #define NCITY 357
 double beta = 0.4;
 char distfile[]="topodist-c357.txt";
-char indexfile[]="data-c357-2019-Flat.txt";
+char indexfile[]="data-c357-2018-Flat.txt";
 
 ///2011-2016 322city
 /*
@@ -119,7 +119,7 @@ string city_list[]={"¼ÃÄÏ", "¹óÑô", "Ç­ÄÏ", "ÁùÅÌË®", "ÄÏ²ý", "¾Å½­", "Ó¥Ì¶", "¸
 
 #endif // NATIONAL
 
-char outfile[]="NI251.txt";
+char outfile[]="NI252.txt";
 FILE* out;
 
 ///Constants
@@ -683,23 +683,32 @@ int main()
         iter += 1;
     }
 
-    double Push[NCITY],Attr[NCITY];
+       double Push[NCITY],Attr[NCITY];
+    double pmax,pmin,amax,amin;
     for(int c=0;c<NCITY;c++)
     {
         Push[c]=QGbest[c];
         if(c==0)
         {
             Attr[0]=Push[0];
+            pmax = pmin = Push[0];
+            amax = amin = Attr[0];
         }
         else
         {
             Attr[c]=QGbest[NCITY+c-1];
+            pmax = max(pmax,Push[c]);
+            amax = max(amax,Attr[c]);
+            pmin = min(pmin,Push[c]);
+            amin = min(amin,Attr[c]);
         }
     }
     for(int c=0;c<NCITY;c++)
     {
         fprintf(out,"%s Push:%f Attr:%f\n",city_list[c].c_str(),Push[c],Attr[c]);
     }
+    fprintf(out,"Pushmax:%f Pushmin:%f\n",pmax,pmin);
+    fprintf(out,"Attrmax:%f Attrmin:%f\n",amax,amin);
     fprintf(out,"RMSE:%f Rsquare:%f\n",Cost(QGbest),Rsquare(QGbest));
     cout<<"Cost:"<<Cost(QGbest)<<" R^2:"<<Rsquare(QGbest)<<endl;
 
